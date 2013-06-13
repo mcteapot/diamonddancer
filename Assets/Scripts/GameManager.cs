@@ -169,40 +169,64 @@ public class GameManager : MonoBehaviour {
 		Vector3 startScale = new Vector3(0, 1.0F, 1.0F);
 		Vector3 endScale = new Vector3(1.0F, 1.0F, 1.0F);
 		
-		if(edgeTopRightActive && edgeBottomRightActive && (tmpActive < maxActive)) {
-			tmpActive = tmpActive + 1;
-			sideTopRight.gameObject.active = true;
-			sideTopRight.localScale = Vector3.MoveTowards(sideTopRight.localScale, endScale, Time.deltaTime * sideGrowSpeed);
+		// SIDE TOP RIGHT
+		if(edgeTopRightActive && edgeBottomRightActive) {
+	
+			if(tmpActive < maxActive) {
+				tmpActive = tmpActive + 1;
+				sideTopRight.gameObject.active = true;
+				sideTopRight.localScale = Vector3.MoveTowards(sideTopRight.localScale, endScale, Time.deltaTime * sideGrowSpeed);
+			} else {
+				sideTopRight.localScale = startScale;
+				sideTopRight.gameObject.active = false;
+			}
 		} else {
 			sideTopRight.localScale = startScale;
 			sideTopRight.gameObject.active = false;
 		}
 		
-		if(edgeTopLeftActive && edgeBottomLeftActive && (tmpActive < maxActive)) {
-			tmpActive = tmpActive + 1;
-			if(tmpActive >= maxActive) {
-				return;
+		// SIDE BOTTOM LEFT
+		if(edgeTopLeftActive && edgeBottomLeftActive) {
+			if(tmpActive < maxActive) {
+				tmpActive = tmpActive + 1;
+			
+				sideBottomLeft.gameObject.active = true;
+				sideBottomLeft.localScale = Vector3.MoveTowards(sideBottomLeft.localScale, endScale, Time.deltaTime * sideGrowSpeed);
+			} else {
+				sideBottomLeft.localScale = startScale;
+				sideBottomLeft.gameObject.active = false;				
 			}
-			sideBottomLeft.gameObject.active = true;
-			sideBottomLeft.localScale = Vector3.MoveTowards(sideBottomLeft.localScale, endScale, Time.deltaTime * sideGrowSpeed);
 		} else {
 			sideBottomLeft.localScale = startScale;
 			sideBottomLeft.gameObject.active = false;
 		}
 		
+		// SIDE TOP LEFT
 		if(edgeTopLeftActive && edgeTopRightActive && (tmpActive < maxActive)) {
-			tmpActive = tmpActive + 1;
-			sideTopLeft.gameObject.active = true;
-			sideTopLeft.localScale = Vector3.MoveTowards(sideTopLeft.localScale, endScale, Time.deltaTime * sideGrowSpeed);
+			if(tmpActive < maxActive) {
+				tmpActive = tmpActive + 1;
+				sideTopLeft.gameObject.active = true;
+				sideTopLeft.localScale = Vector3.MoveTowards(sideTopLeft.localScale, endScale, Time.deltaTime * sideGrowSpeed);				
+			} else  {
+				sideTopLeft.localScale = startScale;
+				sideTopLeft.gameObject.active = false;
+			}
+
 		} else {
 			sideTopLeft.localScale = startScale;
 			sideTopLeft.gameObject.active = false;
 		}
 		
+		// SIDE BOTTOM RIGHT
 		if(edgeBottomLeftActive && edgeBottomRightActive && (tmpActive < maxActive)) {
-			tmpActive = tmpActive + 1;
-			sideBottomRight.gameObject.active = true;
-			sideBottomRight.localScale = Vector3.MoveTowards(sideBottomRight.localScale, endScale, Time.deltaTime * sideGrowSpeed);
+			if(tmpActive < maxActive) {
+				tmpActive = tmpActive + 1;
+				sideBottomRight.gameObject.active = true;
+				sideBottomRight.localScale = Vector3.MoveTowards(sideBottomRight.localScale, endScale, Time.deltaTime * sideGrowSpeed);
+			} else  {
+				sideBottomRight.localScale = startScale;
+				sideBottomRight.gameObject.active = false;	
+			}
 		} else {
 			sideBottomRight.localScale = startScale;
 			sideBottomRight.gameObject.active = false;
