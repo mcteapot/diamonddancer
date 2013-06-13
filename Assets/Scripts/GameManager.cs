@@ -30,14 +30,14 @@ public class GameManager : MonoBehaviour {
 	public Color edgeColorNotActive;
 	public Color edgeColorActive;
 	
-	public float edgeActiveDuration = 0.5F;
+	//public float edgeActiveDuration = 0.5F;
 	
 	private bool edgeTopRightActive;
 	private bool edgeTopLeftActive;
 	private bool edgeBottomRightActive;
 	private bool edgeBottomLeftActive;
 	
-	private int maxActive = 2;
+	public int maxActive = 2;
 	
 	public Transform levelCube01;
 	public Transform levelCube02;
@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour {
 	public Transform sideBottomRight;
 	public Transform sideBottomLeft;
 	
-	public float sideGrowSpeed = 1.5F;
+	public float sideGrowSpeed = 3.0F;
 	
 	
 	// Use this for initialization
@@ -84,11 +84,13 @@ public class GameManager : MonoBehaviour {
 		}else if(gameState == GameStates.gameActive) {
 			setEdgeActive();
 			liteUpEdges();
-			sideCubeActive();
+			setSideActive();
 			
 			//move to level change
+			setSideCubePositionAndScale();
 			setEdgePosition();
 			setLevelCubePosition();
+			
 
 		
 		}else if(gameState == GameStates.gameEnding) {
@@ -134,7 +136,7 @@ public class GameManager : MonoBehaviour {
 
 	}
 	
-	void liteUpEdges() {
+	void liteUpEdges () {
 		if(edgeTopLeftActive) {
 			edgeTopLeft.GetChild(0).renderer.material.color = edgeColorActive;
 		}else {
@@ -160,7 +162,55 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 	
-	void setEdgePosition() {
+	void setSideActive () {
+		
+		int tmpActive = 0;
+		
+		Vector3 startScale = new Vector3(0, 1.0F, 1.0F);
+		Vector3 endScale = new Vector3(1.0F, 1.0F, 1.0F);
+		
+		if(edgeTopRightActive && edgeBottomRightActive && (tmpActive < maxActive)) {
+			tmpActive = tmpActive + 1;
+			sideTopRight.gameObject.active = true;
+			sideTopRight.localScale = Vector3.MoveTowards(sideTopRight.localScale, endScale, Time.deltaTime * sideGrowSpeed);
+		} else {
+			sideTopRight.localScale = startScale;
+			sideTopRight.gameObject.active = false;
+		}
+		
+		if(edgeTopLeftActive && edgeBottomLeftActive && (tmpActive < maxActive)) {
+			tmpActive = tmpActive + 1;
+			if(tmpActive >= maxActive) {
+				return;
+			}
+			sideBottomLeft.gameObject.active = true;
+			sideBottomLeft.localScale = Vector3.MoveTowards(sideBottomLeft.localScale, endScale, Time.deltaTime * sideGrowSpeed);
+		} else {
+			sideBottomLeft.localScale = startScale;
+			sideBottomLeft.gameObject.active = false;
+		}
+		
+		if(edgeTopLeftActive && edgeTopRightActive && (tmpActive < maxActive)) {
+			tmpActive = tmpActive + 1;
+			sideTopLeft.gameObject.active = true;
+			sideTopLeft.localScale = Vector3.MoveTowards(sideTopLeft.localScale, endScale, Time.deltaTime * sideGrowSpeed);
+		} else {
+			sideTopLeft.localScale = startScale;
+			sideTopLeft.gameObject.active = false;
+		}
+		
+		if(edgeBottomLeftActive && edgeBottomRightActive && (tmpActive < maxActive)) {
+			tmpActive = tmpActive + 1;
+			sideBottomRight.gameObject.active = true;
+			sideBottomRight.localScale = Vector3.MoveTowards(sideBottomRight.localScale, endScale, Time.deltaTime * sideGrowSpeed);
+		} else {
+			sideBottomRight.localScale = startScale;
+			sideBottomRight.gameObject.active = false;
+		}
+		
+	}
+	
+	void setEdgePosition () {
 		Vector3 topRightPos = new Vector3(0, 0, 0);
 		Vector3 topLeftPos = new Vector3(0, 0, 0);
 		Vector3 bottomRightPos = new Vector3(0, 0, 0);
@@ -201,19 +251,85 @@ public class GameManager : MonoBehaviour {
 			break;
 		}
 		
-	edgeTopRight.position = topRightPos;
-	edgeTopLeft.position = topLeftPos;
-	edgeBottomRight.position = bottomRightPos;
-	edgeBottomLeft.position = bottomLeftPos;
+		edgeTopRight.position = topRightPos;
+		edgeTopLeft.position = topLeftPos;
+		edgeBottomRight.position = bottomRightPos;
+		edgeBottomLeft.position = bottomLeftPos;
 	}
 	
 	
-	void sideCubeActive() {
+	void setSideCubePositionAndScale () {
+		Vector3 topRightPos = new Vector3(0, 0, 0);
+		Vector3 topLeftPos = new Vector3(0, 0, 0);
+		Vector3 bottomRightPos = new Vector3(0, 0, 0);
+		Vector3 bottomLeftPos = new Vector3(0, 0, 0);
 		
+		Vector3 cubeScale = new Vector3(0, 0, 0);
+		
+		switch(gameLevel) {
+		case GameLevels.level00 :
+			topRightPos = new Vector3(0.6F, 0, 0);
+			topLeftPos = new Vector3(0, 0, 0.6F);
+			bottomRightPos = new Vector3(0, 0, -0.6F);
+			bottomLeftPos = new Vector3(-0.6F, 0, 0);
+			
+			cubeScale = new Vector3(0, 0, 0);
+	
+			break;
+		case GameLevels.level01 :
+			topRightPos = new Vector3(0.6F, 0, 0);
+			topLeftPos = new Vector3(0, 0, 0.6F);
+			bottomRightPos = new Vector3(0, 0, -0.6F);
+			bottomLeftPos = new Vector3(-0.6F, 0, 0);
+			
+			cubeScale = new Vector3(1.5F, 0.6F, 0.3F);
+			
+			break;
+		case GameLevels.level02 :
+			topRightPos = new Vector3(1.6F, 0, 0);
+			topLeftPos = new Vector3(0, 0, 1.6F);
+			bottomRightPos = new Vector3(0, 0, -1.6F);
+			bottomLeftPos = new Vector3(-1.6F, 0, 0);
+			
+			cubeScale = new Vector3(3.5F, 0.6F, 0.3F);
+			
+			break;
+		case GameLevels.level03 :
+			topRightPos = new Vector3(2.6F, 0, 0);
+			topLeftPos = new Vector3(0, 0, 2.6F);
+			bottomRightPos = new Vector3(0, 0, -2.6F);
+			bottomLeftPos = new Vector3(-2.6F, 0, 0);
+			
+			cubeScale = new Vector3(5.5F, 0.6F, 0.3F);
+			
+			break;
+		case GameLevels.level04 :
+			topRightPos = new Vector3(3.6F, 0, 0);
+			topLeftPos = new Vector3(0, 0, 3.6F);
+			bottomRightPos = new Vector3(0, 0, -3.6F);
+			bottomLeftPos = new Vector3(-3.6F, 0, 0);
+			
+			cubeScale = new Vector3(7.5F, 0.6F, 0.3F);
+			
+			break;
+		default:
+			break;
+		}
+		
+		sideTopRight.position = topRightPos;
+		sideTopLeft.position = topLeftPos;
+		sideBottomRight.position = bottomRightPos;
+		sideBottomLeft.position = bottomLeftPos;
+		
+		
+		sideTopRight.GetChild(0).transform.localScale = cubeScale;
+		sideTopLeft.GetChild(0).transform.localScale = cubeScale;
+		sideBottomRight.GetChild(0).transform.localScale = cubeScale;
+		sideBottomLeft.GetChild(0).transform.localScale = cubeScale;
 	}
 	
 	
-	void setLevelCubePosition() {
+	void setLevelCubePosition () {
 		Vector3 leve1Pos = new Vector3(0, 0, 0);
 		Vector3 leve2Pos = new Vector3(0, 0, 0);
 		Vector3 leve3Pos = new Vector3(0, 0, 0);
