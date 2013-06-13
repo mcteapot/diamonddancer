@@ -2,6 +2,14 @@ using UnityEngine;
 using System.Collections;
 
 public class GameManager : MonoBehaviour {
+	public enum GameStates {
+		gameInit = 0,
+		gameStart = 1,
+		gameActive = 2,
+		gameEnding = 3,
+		gameEnd = 4,
+		gameInActive = 5
+	}
 	
 	public enum GameLevels {
 		level00 = 0,
@@ -12,6 +20,7 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	public GameLevels gameLevel = GameLevels.level00;
+	public static GameStates gameState = GameStates.gameActive;
 	
 	public Transform edgeTopRight;
 	public Transform edgeTopLeft;
@@ -35,6 +44,13 @@ public class GameManager : MonoBehaviour {
 	public Transform levelCube03;
 	public Transform levelCube04;
 	
+	public Transform sideTopRight;
+	public Transform sideTopLeft;
+	public Transform sideBottomRight;
+	public Transform sideBottomLeft;
+	
+	public float sideGrowSpeed = 1.5F;
+	
 	
 	// Use this for initialization
 	void Start () {
@@ -44,44 +60,74 @@ public class GameManager : MonoBehaviour {
 		edgeTopRight.GetChild(0).renderer.material.color = edgeColorNotActive;
 		edgeBottomLeft.GetChild(0).renderer.material.color = edgeColorNotActive;
 		edgeBottomRight.GetChild(0).renderer.material.color = edgeColorNotActive;
+		
+		sideTopRight.gameObject.active = false;
+		sideTopLeft.gameObject.active = false;
+		sideBottomRight.gameObject.active = false;
+		sideBottomLeft.gameObject.active = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		setEdgeActive();
-		liteUpEdges();
-		setEdgePosition();
-		setLevelCubePosition();
+		
+		gameManage();
+		
+	}
+	
+	
+	
+	void gameManage () {
+		if(gameState == GameStates.gameInit){
+		
+		}else if(gameState == GameStates.gameStart) {
+
+		}else if(gameState == GameStates.gameActive) {
+			setEdgeActive();
+			liteUpEdges();
+			sideCubeActive();
+			
+			//move to level change
+			setEdgePosition();
+			setLevelCubePosition();
+
+		
+		}else if(gameState == GameStates.gameEnding) {
+
+		
+		}else if(gameState == GameStates.gameEnd) {
+
+		
+		}else if(gameState == GameStates.gameInActive) {
+
+		}
 	}
 	
 	void setEdgeActive () {
 		
-		int tmpActive = 0;
-		
 		if(Input.GetKey("w") || Input.GetKey("e")){
 			edgeTopRightActive = true;
-			Debug.Log("TOP");
+			//Debug.Log("TOP");
 		}else {
 			edgeTopRightActive = false;
 		}
 		
 		if(Input.GetKey("a")) {
 			edgeTopLeftActive = true;
-			Debug.Log("LEFT");
+			//Debug.Log("LEFT");
 		}else {
 			edgeTopLeftActive = false;
 		}
 		
 		if(Input.GetKey("f")) {
 			edgeBottomRightActive = true;
-			Debug.Log("RIGHT");
+			//Debug.Log("RIGHT");
 		}else {
 			edgeBottomRightActive = false;
 		}
 		
 		if(Input.GetKey("x") || Input.GetKey("c")) {
 			edgeBottomLeftActive = true;
-			Debug.Log("BOTTOM");
+			//Debug.Log("BOTTOM");
 		}else {
 			edgeBottomLeftActive = false;
 		}
@@ -160,6 +206,12 @@ public class GameManager : MonoBehaviour {
 	edgeBottomRight.position = bottomRightPos;
 	edgeBottomLeft.position = bottomLeftPos;
 	}
+	
+	
+	void sideCubeActive() {
+		
+	}
+	
 	
 	void setLevelCubePosition() {
 		Vector3 leve1Pos = new Vector3(0, 0, 0);
