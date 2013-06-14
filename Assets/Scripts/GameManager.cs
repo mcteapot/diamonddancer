@@ -51,10 +51,16 @@ public class GameManager : MonoBehaviour {
 	
 	public float sideGrowSpeed = 3.0F;
 	
+	private float nextLevelIncrement = 30.0F;
+	private float tmpnNextLevelIncrement = 30.0F;
+	private float nextLevelTime = 0.0F;
+	
+	public Transform gameLogo;
+	
 	
 	// Use this for initialization
 	void Start () {
-		gameLevel = GameLevels.level01;
+		//gameLevel = GameLevels.level01;
 		
 		edgeTopLeft.GetChild(0).renderer.material.color = edgeColorNotActive;
 		edgeTopRight.GetChild(0).renderer.material.color = edgeColorNotActive;
@@ -65,6 +71,9 @@ public class GameManager : MonoBehaviour {
 		sideTopLeft.gameObject.active = false;
 		sideBottomRight.gameObject.active = false;
 		sideBottomLeft.gameObject.active = false;
+		
+		tmpnNextLevelIncrement = nextLevelIncrement;
+		//nextLevelTime = Time.time + tmpnNextLevelIncrement;
 	}
 	
 	// Update is called once per frame
@@ -80,16 +89,14 @@ public class GameManager : MonoBehaviour {
 		if(gameState == GameStates.gameInit){
 		
 		}else if(gameState == GameStates.gameStart) {
+			
 
 		}else if(gameState == GameStates.gameActive) {
 			setEdgeActive();
 			liteUpEdges();
 			setSideActive();
+			levelIncrease();
 			
-			//move to level change
-			setSideCubePositionAndScale();
-			setEdgePosition();
-			setLevelCubePosition();
 			
 
 		
@@ -100,9 +107,61 @@ public class GameManager : MonoBehaviour {
 
 		
 		}else if(gameState == GameStates.gameInActive) {
-
+			gameStartCheck();
 		}
 	}
+	
+	void gameStartCheck () {
+		
+	}
+	
+	void levelIncrease () {
+		if(gameLevel == GameLevels.level00) {
+			gameLevel = GameLevels.level01;
+			nextLevelTime = Time.time + tmpnNextLevelIncrement;
+			
+			//move to level change
+			setSideCubePositionAndScale();
+			setEdgePosition();
+			setLevelCubePosition();
+		}
+		
+		if(Time.time > nextLevelTime && !(gameLevel == GameLevels.level04)) {
+			if(gameLevel == GameLevels.level01) {
+				gameLevel = GameLevels.level02;
+				tmpnNextLevelIncrement = tmpnNextLevelIncrement * 0.75F;
+				nextLevelTime = Time.time + tmpnNextLevelIncrement;
+				
+				//move to level change
+				setSideCubePositionAndScale();
+				setEdgePosition();
+				setLevelCubePosition();
+				
+			} else if(gameLevel == GameLevels.level02) {
+				gameLevel = GameLevels.level03;
+				tmpnNextLevelIncrement = tmpnNextLevelIncrement * 0.75F;
+				nextLevelTime = Time.time + tmpnNextLevelIncrement;
+				
+				//move to level change
+				setSideCubePositionAndScale();
+				setEdgePosition();
+				setLevelCubePosition();
+				
+			} else if(gameLevel == GameLevels.level03) {
+				gameLevel = GameLevels.level04;
+				
+				//move to level change
+				setSideCubePositionAndScale();
+				setEdgePosition();
+				setLevelCubePosition();
+				
+			}
+		}
+		
+		
+		
+	}
+	
 	
 	void setEdgeActive () {
 		
@@ -135,6 +194,7 @@ public class GameManager : MonoBehaviour {
 		}
 
 	}
+	
 	
 	void liteUpEdges () {
 		if(edgeTopLeftActive) {

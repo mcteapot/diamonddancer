@@ -13,8 +13,8 @@ public class BallManager : MonoBehaviour {
 	private Vector3 startPosBottom = new Vector3(0, 0.5F, -5.5F);
 	
 	private Vector3 startVelTop = new Vector3(0, 0, -1);
-	private Vector3 startVelLeft = new Vector3(-1, 0, 0);
-	private Vector3 startVelRight = new Vector3(1, 0, 0);
+	private Vector3 startVelLeft = new Vector3(1, 0, 0);
+	private Vector3 startVelRight = new Vector3(-1, 0, 0);
 	private Vector3 startVelBottom = new Vector3(0, 0, 1);
 	
 	private Vector3 startPos = new Vector3(0, 0, 0);
@@ -23,6 +23,7 @@ public class BallManager : MonoBehaviour {
 	
 	void Awake () {
 		int randomNum = Random.Range(1, 5);
+		//int randomNum = 2;
 		Debug.Log("Start Pos: " + randomNum);
 		if(randomNum == 1) {
 			// Top
@@ -61,6 +62,14 @@ public class BallManager : MonoBehaviour {
 		//int randomNum = Random.Range(1, 5);
 		//Debug.Log(randomNum);
 	
+	}
+	
+	void FixedUpdate () {
+		limitVelocity();
+	}
+	
+	void limitVelocity () {
+		Debug.Log("VELOCITY " + rigidbody.velocity);
 	}
 	
 }

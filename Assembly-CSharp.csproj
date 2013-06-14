@@ -45,7 +45,16 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\BallManager.cs" />
+     <Compile Include="Assets\Scripts\BorderBManager.cs" />
+     <Compile Include="Assets\Scripts\BorderLManager.cs" />
+     <Compile Include="Assets\Scripts\BorderRManager.cs" />
+     <Compile Include="Assets\Scripts\BorderTManager.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
+     <Compile Include="Assets\Scripts\LevelCubeManager.cs" />
+     <Compile Include="Assets\Scripts\SideCubeBManager.cs" />
+     <Compile Include="Assets\Scripts\SideCubeLManager.cs" />
+     <Compile Include="Assets\Scripts\SideCubeRManager.cs" />
+     <Compile Include="Assets\Scripts\SideCubeTManager.cs" />
      <Compile Include="Assets\Scripts\WaveMotion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
