@@ -5,6 +5,8 @@ public class LevelCubeManager : MonoBehaviour {
 	
 	public Transform gameManager;
 	
+	//private GameManager gameManager;
+	
 
 	// Use this for initialization
 	void Start () {
@@ -18,6 +20,7 @@ public class LevelCubeManager : MonoBehaviour {
 	}
 	
 	void OnCollisionEnter (Collision collision) {
+		gameManager.gameObject.GetComponent<GameManager>().endGame();
 		Debug.Log("GAME FUCKING OVER");
 	}
 }

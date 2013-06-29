@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	public GameLevels gameLevel = GameLevels.level00;
-	public static GameStates gameState = GameStates.gameActive;
+	public static GameStates gameState = GameStates.gameInActive;
 	
 	public Transform edgeTopRight;
 	public Transform edgeTopLeft;
@@ -51,16 +51,35 @@ public class GameManager : MonoBehaviour {
 	
 	public float sideGrowSpeed = 3.0F;
 	
-	private float nextLevelIncrement = 30.0F;
-	private float tmpnNextLevelIncrement = 30.0F;
+	private float nextLevelIncrement = 40.0F;
+	private float tmpnNextLevelIncrement = 40.0F;
 	private float nextLevelTime = 0.0F;
 	
-	public Transform gameLogo;
+	private float nextBallIncrement = 20.0F;
+	private float tmpnNextBallIncrement = 20.0F;
+	private float nextBallTime = 0.0F;
+
+	private ArrayList ballActive = new ArrayList();	
 	
+	public Transform gameLogo;
+	public Transform ball;
+	
+	public Transform audioMusic;
+	
+	public AudioClip music1;
+	public AudioClip music2;
+	public AudioClip music3;
+	public AudioClip music4;
+	
+	public AudioClip startAnounce;
+	public AudioClip endGameAudio;
+	
+	public void endGame () {
+		gameState = GameStates.gameEnding;
+	}
 	
 	// Use this for initialization
 	void Start () {
-		//gameLevel = GameLevels.level01;
 		
 		edgeTopLeft.GetChild(0).renderer.material.color = edgeColorNotActive;
 		edgeTopRight.GetChild(0).renderer.material.color = edgeColorNotActive;
@@ -72,8 +91,6 @@ public class GameManager : MonoBehaviour {
 		sideBottomRight.gameObject.active = false;
 		sideBottomLeft.gameObject.active = false;
 		
-		tmpnNextLevelIncrement = nextLevelIncrement;
-		//nextLevelTime = Time.time + tmpnNextLevelIncrement;
 	}
 	
 	// Update is called once per frame
@@ -89,22 +106,32 @@ public class GameManager : MonoBehaviour {
 		if(gameState == GameStates.gameInit){
 		
 		}else if(gameState == GameStates.gameStart) {
-			
-
+			audio.PlayOneShot(startAnounce);
+			gameState = GameStates.gameActive;
 		}else if(gameState == GameStates.gameActive) {
 			setEdgeActive();
 			liteUpEdges();
 			setSideActive();
+			createBallsActive();
 			levelIncrease();
 			
-			
-
-		
 		}else if(gameState == GameStates.gameEnding) {
+			audioMusic.audio.Stop();
+			
+			audio.PlayOneShot(endGameAudio);
+			
+			
+			edgeTopLeft.GetChild(0).renderer.material.color = edgeColorNotActive;
+			edgeTopRight.GetChild(0).renderer.material.color = edgeColorNotActive;
+			edgeBottomLeft.GetChild(0).renderer.material.color = edgeColorNotActive;
+			edgeBottomRight.GetChild(0).renderer.material.color = edgeColorNotActive;
 
-		
+			gameState = GameStates.gameEnd;
 		}else if(gameState == GameStates.gameEnd) {
-
+			gameLogo.gameObject.active = true;
+			gameLevel = GameLevels.level00;
+			clearAllBalls();
+			gameState = GameStates.gameInActive;
 		
 		}else if(gameState == GameStates.gameInActive) {
 			gameStartCheck();
@@ -112,13 +139,21 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	void gameStartCheck () {
-		
+		if(Input.GetKey("s") && Input.GetKey("d")) {
+			gameLogo.gameObject.active = false;
+			tmpnNextLevelIncrement = nextLevelIncrement;
+			tmpnNextBallIncrement = nextBallIncrement;
+			gameState = GameStates.gameStart;
+		}
 	}
 	
 	void levelIncrease () {
 		if(gameLevel == GameLevels.level00) {
 			gameLevel = GameLevels.level01;
 			nextLevelTime = Time.time + tmpnNextLevelIncrement;
+			
+			audioMusic.audio.clip = music1;
+			audioMusic.audio.Play();
 			
 			//move to level change
 			setSideCubePositionAndScale();
@@ -128,38 +163,80 @@ public class GameManager : MonoBehaviour {
 		
 		if(Time.time > nextLevelTime && !(gameLevel == GameLevels.level04)) {
 			if(gameLevel == GameLevels.level01) {
+				clearAllBalls();
 				gameLevel = GameLevels.level02;
 				tmpnNextLevelIncrement = tmpnNextLevelIncrement * 0.75F;
 				nextLevelTime = Time.time + tmpnNextLevelIncrement;
 				
+				audioMusic.audio.clip = music2;
+				audioMusic.audio.Play();
+				
 				//move to level change
 				setSideCubePositionAndScale();
 				setEdgePosition();
 				setLevelCubePosition();
+				ballActive.Add(createBall());
 				
 			} else if(gameLevel == GameLevels.level02) {
+				clearAllBalls();
 				gameLevel = GameLevels.level03;
 				tmpnNextLevelIncrement = tmpnNextLevelIncrement * 0.75F;
 				nextLevelTime = Time.time + tmpnNextLevelIncrement;
 				
+				audioMusic.audio.clip = music3;
+				audioMusic.audio.Play();
+				
 				//move to level change
 				setSideCubePositionAndScale();
 				setEdgePosition();
 				setLevelCubePosition();
+				ballActive.Add(createBall());
 				
 			} else if(gameLevel == GameLevels.level03) {
+				clearAllBalls();
 				gameLevel = GameLevels.level04;
+				
+				audioMusic.audio.clip = music4;
+				audioMusic.audio.Play();
 				
 				//move to level change
 				setSideCubePositionAndScale();
 				setEdgePosition();
 				setLevelCubePosition();
+				ballActive.Add(createBall());
 				
 			}
 		}
 		
 		
 		
+	}
+	
+	void createBallsActive () {
+		if(gameLevel == GameLevels.level00) {
+			ballActive.Add(createBall());
+			//nextBallTime = Time.time + tmpnNextBallIncrement;
+			
+		}
+		
+		if(Time.time > nextBallTime) {
+			ballActive.Add(createBall());
+			//nextBallTime = Time.time + tmpnNextBallIncrement;
+		}
+	}
+	
+	Transform createBall () {
+		Transform ballNew = Instantiate(ball, new Vector3(0, 0.5F, 0), Quaternion.identity) as Transform;
+		nextBallTime = Time.time + tmpnNextBallIncrement;
+		return ballNew;
+	}
+	
+	void clearAllBalls () {
+		for(int i = 0; i < ballActive.Count; i++) {
+			Transform activeBall = ballActive[i] as Transform;
+			Destroy(activeBall.gameObject);
+		}
+		ballActive.Clear();
 	}
 	
 	

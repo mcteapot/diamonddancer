@@ -5,6 +5,8 @@ public class BorderLManager : MonoBehaviour {
 	
 	public float precentIncrease = 10.0F;
 	public float maxVeol = 15.0F;
+	
+	public AudioClip bip;
 
 	// Use this for initialization
 	void Start () {
@@ -23,5 +25,7 @@ public class BorderLManager : MonoBehaviour {
 		float newVector = Random.Range(-5.0F, 5.0F);
 		newVelo = Mathf.Clamp(newVelo, 1.0F, maxVeol); 
 		collision.rigidbody.velocity = new Vector3(newVelo, 0, newVector);
+		
+		audio.PlayOneShot(bip);
 	}
 }
