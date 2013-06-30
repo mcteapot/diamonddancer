@@ -55,8 +55,8 @@ public class GameManager : MonoBehaviour {
 	private float tmpnNextLevelIncrement = 40.0F;
 	private float nextLevelTime = 0.0F;
 	
-	private float nextBallIncrement = 20.0F;
-	private float tmpnNextBallIncrement = 20.0F;
+	private float nextBallIncrement = 15.0F;
+	private float tmpnNextBallIncrement = 15.0F;
 	private float nextBallTime = 0.0F;
 
 	private ArrayList ballActive = new ArrayList();	
@@ -71,8 +71,14 @@ public class GameManager : MonoBehaviour {
 	public AudioClip music3;
 	public AudioClip music4;
 	
-	public AudioClip startAnounce;
+	//public AudioClip startAnounce;
 	public AudioClip endGameAudio;
+	
+	public Transform levelUpMusic;
+	
+	public Transform startAnouncer;
+	
+	private bool startAudio = false;
 	
 	public void endGame () {
 		gameState = GameStates.gameEnding;
@@ -106,7 +112,6 @@ public class GameManager : MonoBehaviour {
 		if(gameState == GameStates.gameInit){
 		
 		}else if(gameState == GameStates.gameStart) {
-			audio.PlayOneShot(startAnounce);
 			gameState = GameStates.gameActive;
 		}else if(gameState == GameStates.gameActive) {
 			setEdgeActive();
@@ -119,7 +124,8 @@ public class GameManager : MonoBehaviour {
 			audioMusic.audio.Stop();
 			
 			audio.PlayOneShot(endGameAudio);
-			
+		
+			startAudio = false;
 			
 			edgeTopLeft.GetChild(0).renderer.material.color = edgeColorNotActive;
 			edgeTopRight.GetChild(0).renderer.material.color = edgeColorNotActive;
@@ -146,14 +152,25 @@ public class GameManager : MonoBehaviour {
 			gameState = GameStates.gameStart;
 		}
 	}
-	
+	IEnumerator startAudioPlay () {
+		
+		//audio.PlayOneShot(startAnounce);
+		startAnouncer.audio.Play();
+		
+		yield return new WaitForSeconds(0.5F);
+		audioMusic.audio.clip = music1;
+		audioMusic.audio.Play();
+		
+	}
 	void levelIncrease () {
 		if(gameLevel == GameLevels.level00) {
 			gameLevel = GameLevels.level01;
 			nextLevelTime = Time.time + tmpnNextLevelIncrement;
-			
-			audioMusic.audio.clip = music1;
-			audioMusic.audio.Play();
+
+			if(!startAudio) {
+				StartCoroutine(startAudioPlay());
+				startAudio = true;
+			}
 			
 			//move to level change
 			setSideCubePositionAndScale();
@@ -165,8 +182,11 @@ public class GameManager : MonoBehaviour {
 			if(gameLevel == GameLevels.level01) {
 				clearAllBalls();
 				gameLevel = GameLevels.level02;
-				tmpnNextLevelIncrement = tmpnNextLevelIncrement * 0.75F;
+				//tmpnNextLevelIncrement = tmpnNextLevelIncrement * 0.75F;
 				nextLevelTime = Time.time + tmpnNextLevelIncrement;
+				
+				
+				levelUpMusic.audio.Play();
 				
 				audioMusic.audio.clip = music2;
 				audioMusic.audio.Play();
@@ -180,8 +200,10 @@ public class GameManager : MonoBehaviour {
 			} else if(gameLevel == GameLevels.level02) {
 				clearAllBalls();
 				gameLevel = GameLevels.level03;
-				tmpnNextLevelIncrement = tmpnNextLevelIncrement * 0.75F;
+				//tmpnNextLevelIncrement = tmpnNextLevelIncrement * 0.75F;
 				nextLevelTime = Time.time + tmpnNextLevelIncrement;
+				
+				levelUpMusic.audio.Play();
 				
 				audioMusic.audio.clip = music3;
 				audioMusic.audio.Play();
@@ -195,6 +217,8 @@ public class GameManager : MonoBehaviour {
 			} else if(gameLevel == GameLevels.level03) {
 				clearAllBalls();
 				gameLevel = GameLevels.level04;
+				
+				levelUpMusic.audio.Play();
 				
 				audioMusic.audio.clip = music4;
 				audioMusic.audio.Play();
